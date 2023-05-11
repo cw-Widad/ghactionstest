@@ -6,9 +6,6 @@ from math import sqrt, factorial
 
 class AdditionPayloadBody(BaseModel):
     numbers: list
-    
-    
-
 class Payloadtwo(BaseModel):
     number1: Union[int,float]
     number2: Union[int,float]
