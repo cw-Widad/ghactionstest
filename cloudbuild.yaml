@@ -20,4 +20,4 @@ steps:
       - --region
       - europe-west3
 options:
-  logging: NONE
+  logging: GCS_ONLY
