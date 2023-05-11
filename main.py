@@ -2,42 +2,53 @@ from typing import Union
 
 from fastapi import FastAPI
 from pydantic import BaseModel
+from math import sqrt, factorial
 
 class AdditionPayloadBody(BaseModel):
-    summantOne: int
-    summantTwo: int
+    numbers: list
+    
+    
 
-class DifferencePayloadBody(BaseModel):
-    subtrahentOne: int
-    subtrahentTwo: int
+class Payloadtwo(BaseModel):
+    number1: Union[int,float]
+    number2: Union[int,float]
 
-class ProductPayloadBody(BaseModel):
-    factorOne: int
-    factorTwo: int
-
-class DivisionPayloadBody(BaseModel):
-    divisorOne: int
-    divisorTwo: int
+class Payloadone(BaseModel):
+    number: Union[int,float]
 
 app = FastAPI()
 
+@app.get("/")
+async def root():
+    return {"Use /docs for interactive use"}
+
 @app.post("/addition")
 def addition(payload: AdditionPayloadBody):
-    sum = payload.summantOne + payload.summantTwo
-    return {"number1": payload.summantOne, "number2": payload.summantTwo, "sum": sum}
+    sumadd = sum(payload.numbers)
+    return f"sum of numbers {[i for i in payload.numbers]}: {sumadd}"
+    
+@app.post("/squareroot")
+def squareroot(payload: Payloadone ):
+    squareroot = sqrt(payload.number)
+    return f"square root of {payload.number} is : {squareroot}"
+
+@app.post("/factorial")
+def squareroot(payload: Payloadone ):
+    factorialnum = factorial(payload.number)
+    return f"factorial root of {payload.number} is : {factorialnum}"
 
 @app.post("/difference")
-def difference(payload: DifferencePayloadBody):
-    diff = payload.subtrahentOne - payload.subtrahentTwo
-    return {"subtrahentOne": payload.subtrahentOne, "subtrahentTwo": payload.subtrahentTwo, "difference": diff}
+def difference(payload: Payloadtwo):
+    diff = payload.number1 - payload.number2
+    return {"number1": payload.number1, "number2": payload.number2, "difference": diff}
 
 @app.post("/product")
-def product(payload: ProductPayloadBody):
-    product = payload.factorOne * payload.factorTwo
-    return {"factorOne": payload.factorOne, "factorTwo": payload.factorTwo, "product": product}
+def product(payload: Payloadtwo):
+    product = payload.number1 * payload.number2
+    return {"number1": payload.number1, "number2": payload.number2, "product": product}
 
 @app.post("/division")
-def product(payload: DivisionPayloadBody):
-    quotient = payload.divisorOne / payload.divisorTwo
-    return {"divisorOne": payload.divisorOne, "divisorTwo": payload.divisorTwo, "quotient": quotient}
+def product(payload: Payloadtwo):
+    quotient = payload.number1 / payload.number2
+    return {"number1": payload.number1, "number2": payload.number2, "quotient": quotient}
 
