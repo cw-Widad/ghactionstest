@@ -1,0 +1,33 @@
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+        with:
+          version: '>= 363.0.0'
+      
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      
+      - name: 'setup artifact registry connection'
+        run: 'gcloud auth configure-docker europe-west3-docker.pkg.dev'
+
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: europe-west3-docker.pkg.dev/cw-marius-widad/europe-west3-docker.pkg.dev/cw-academy-sandbox-widad/fastapiv01/calculator-api:latest
+      
+      - name: 'Deploy Container to CloudRun'
+        run: 'gcloud run deploy calculator-api --image europe-west3-docker.pkg.dev/cw-academy-sandbox-widad/fastapiv01/calculator-api:latest --region europe-west3'
